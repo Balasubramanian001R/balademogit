@@ -1,3 +1,26 @@
-git add Jenkinsfile
-git commit -m "Added Jenkins Pipeline"
-git push origin main
+pipeline {
+    agent any
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/<your-username>/<your-repo>.git'
+            }
+        }
+        stage('Deploy Website') {
+            steps {
+                sh '''
+                sudo rm -rf /usr/share/nginx/html/*
+                sudo cp -r * /usr/share/nginx/html/
+                '''
+            }
+        }
+    }
+    post {
+        success {
+            echo '✅ Website deployed successfully!'
+        }
+        failure {
+            echo '❌ Deployment failed. Check logs.'
+        }
+    }
+}
